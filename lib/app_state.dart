@@ -117,8 +117,6 @@ class AppState extends ChangeNotifier {
         return '⚠️ На маршруте есть препятствия для глухих! (отсутствие субтитров, шум)';
       case DisabilityType.mobility:
         return '⚠️ На маршруте есть препятствия для людей с ограниченной подвижностью!';
-      case DisabilityType.intellectual:
-        return '⚠️ На маршруте есть факторы, затрудняющие ориентирование!';
       case DisabilityType.none:
         return '⚠️ На маршруте есть препятствия!';
     }

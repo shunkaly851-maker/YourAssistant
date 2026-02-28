@@ -9,7 +9,6 @@ import 'app_state.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Инициализация базы данных перед запуском приложения
   final databaseService = DatabaseService();
   await databaseService.initDatabase();
   
@@ -149,7 +148,7 @@ class HomeScreen extends StatelessWidget {
           _disabilitySelector(context), 
           if (state.routeWarning != null)
             Positioned(
-              top: 140, // чуть ниже селектора
+              top: 140, 
               left: 20,
               right: 20,
               child: Card(
@@ -227,7 +226,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // В методе _disabilitySelector убираем DisabilityType.none
 Widget _disabilitySelector(BuildContext context) {
   final state = context.watch<AppState>();
   

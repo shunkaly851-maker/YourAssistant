@@ -24,7 +24,7 @@ class DatabaseService {
         sqfliteFfiInit();
         databaseFactory = databaseFactoryFfi;
       }
-      // Для мобильных платформ (Android/iOS) инициализация не требуется
+      // Для мобильных платформ (Android/iOS) 
       _initialized = true;
     }
   }
@@ -35,7 +35,7 @@ class DatabaseService {
     return _database!;
   }
 
-  // Публичный метод для инициализации БД при старте
+  
   Future<void> initDatabase() async {
     _initializeDatabaseFactory();
     await database;
@@ -47,7 +47,7 @@ class DatabaseService {
     
     return await openDatabase(
       pathStr,
-      version: 2, // Увеличиваем версию для обновления схемы
+      version: 2, 
       onCreate: _createTables,
       onUpgrade: _onUpgrade,
     );
@@ -75,11 +75,11 @@ class DatabaseService {
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
-      // Добавляем поле created_at с значением по умолчанию 0
+      
       await db.execute('ALTER TABLE place_reports ADD COLUMN created_at INTEGER NOT NULL DEFAULT 0');
       
-      // Обновляем существующие записи, устанавливая created_at в текущее время
-      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000; // в секундах
+      
+      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000; 
       await db.update(
         'place_reports',
         {'created_at': now},
@@ -118,7 +118,7 @@ class DatabaseService {
               'timestamp': r.timestamp.toIso8601String(),
               'photos': r.photos,
             }).toList()),
-            'created_at': DateTime.now().millisecondsSinceEpoch ~/ 1000, // Unix timestamp в секундах
+            'created_at': DateTime.now().millisecondsSinceEpoch ~/ 1000, 
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -130,7 +130,7 @@ class DatabaseService {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'place_reports',
-      orderBy: 'created_at DESC', // Сортируем по дате создания
+      orderBy: 'created_at DESC', 
     );
 
     return List.generate(maps.length, (i) {
@@ -154,7 +154,7 @@ class DatabaseService {
         );
       } catch (e) {
         print('Ошибка при загрузке отчета ${map['id']}: $e');
-        // Возвращаем пустой отчет в случае ошибки
+      
         return PlaceReport(
           id: map['id'] as String,
           location: LatLng(0, 0),
@@ -217,25 +217,24 @@ class DatabaseService {
     _database = null;
   }
 
-  // Метод для удаления всех отчетов
+  
   Future<void> deleteAllReports() async {
     final db = await database;
     await db.delete('place_reports');
   }
 
-  // Метод для получения статистики
+  
   Future<Map<String, dynamic>> getStatistics() async {
     final db = await database;
     
-    // Получаем общее количество
+  
     final totalResult = await db.rawQuery('SELECT COUNT(*) as count FROM place_reports');
     final totalCount = totalResult.isNotEmpty ? totalResult.first['count'] as int : 0;
     
-    // Получаем количество препятствий
+   
     final obstacleResult = await db.rawQuery('SELECT COUNT(*) as count FROM place_reports WHERE is_obstacle = 1');
     final obstacleCount = obstacleResult.isNotEmpty ? obstacleResult.first['count'] as int : 0;
-    
-    // Получаем количество доступных мест
+
     final accessibleResult = await db.rawQuery('SELECT COUNT(*) as count FROM place_reports WHERE is_obstacle = 0');
     final accessibleCount = accessibleResult.isNotEmpty ? accessibleResult.first['count'] as int : 0;
     
@@ -246,13 +245,13 @@ class DatabaseService {
     };
   }
 
-  // Метод для поиска отчетов по радиусу
+
   Future<List<PlaceReport>> findReportsNearby(LatLng center, double radiusInMeters) async {
     final db = await database;
     
-    // Приблизительный расчет: 1 градус широты ≈ 111 км
+
     final latDelta = radiusInMeters / 111000.0;
-    // 1 градус долготы зависит от широты, используем максимальное значение для простоты
+
     final lngDelta = radiusInMeters / (111000.0 * cos(center.latitude * pi / 180));
     
     final minLat = center.latitude - latDelta;
@@ -291,7 +290,7 @@ class DatabaseService {
     }).whereType<PlaceReport>().toList();
   }
 
-  // Метод для получения отчетов по автору
+
   Future<List<PlaceReport>> getReportsByAuthor(String author) async {
     final db = await database;
     

@@ -26,7 +26,7 @@ class RoutingService {
     for (final report in reports) {
       if (report.negativeTags.isEmpty) continue;
       
-      // Проверяем, есть ли у препятствия хотя бы один важный тег
+      // Проверяем, есть ли у препятствия хотя бы один тег
       bool hasImportantTag = false;
       for (final tag in report.negativeTags) {
         if (importantTags.contains(tag)) {
@@ -56,7 +56,7 @@ class RoutingService {
     return obstacles;
   }
 
-  // Получение маршрута от OSRM (по дорогам!)
+  // Получение маршрута от OSRM
   Future<List<LatLng>> getRoute(LatLng start, LatLng end) async {
     try {
       final url = 'http://router.project-osrm.org/route/v1/foot/'
@@ -75,7 +75,7 @@ class RoutingService {
           }
         }
       }
-      return [start, end]; // fallback
+      return [start, end]; 
       
     } catch (e) {
       print('Ошибка OSRM: $e');

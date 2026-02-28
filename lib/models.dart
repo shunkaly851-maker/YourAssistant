@@ -5,12 +5,10 @@ enum DisabilityType {
   wheelchair,      // колясочники
   blind,           // незрячие
   deaf,            // глухие
-  mobility,        // с нарушением опорно-двигательного аппарата
-  intellectual,    // с интеллектуальными нарушениями
+  mobility,        // проблемы с мобильностью
   none,            // без инвалидности
 }
 
-// Маппинг тегов к типам инвалидности
 const Map<DisabilityType, List<String>> importantNegativeTagsForDisability = {
   DisabilityType.wheelchair: [
     'крутые лестницы',
@@ -36,27 +34,9 @@ const Map<DisabilityType, List<String>> importantNegativeTagsForDisability = {
     'отсутствие лифта',
     'некачественная дорога',
   ],
-  DisabilityType.intellectual: [
-    'недостаточное освещение',
-    'шумное окружение',
-  ],
   DisabilityType.none: [],
 };
 
-// Веса штрафов для препятствий (УВЕЛИЧИЛ В 100 РАЗ)
-const Map<String, double> obstaclePenalties = {
-  'крутые лестницы': 500000.0,     // полмиллиона метров штрафа
-  'узкие проходы': 300000.0,
-  'отсутствие пандуса': 1000000.0,  // МИЛЛИОН метров - практически непроходимо
-  'высокие пороги': 200000.0,
-  'нет тактильной плитки': 300000.0,
-  'отсутствие субтитров': 150000.0,
-  'шумное окружение': 100000.0,
-  'недостаточное освещение': 200000.0,
-  'некачественная дорога': 250000.0,
-  'отсутствие лифта': 800000.0,
-  'неудобная парковка': 100000.0,
-};
 
 // Хорошие теги
 const List<String> positiveTags = [
@@ -163,26 +143,5 @@ class PlaceReport {
       photoUrl: photoUrl ?? this.photoUrl,
       reviews: reviews ?? this.reviews,
     );
-  }
-
-  double getPenaltyForDisability(DisabilityType disability) {
-    double penalty = 0.0;
-    final importantNegativeTags = importantNegativeTagsForDisability[disability] ?? [];
-    
-    for (final tag in negativeTags) {
-      final basePenalty = obstaclePenalties[tag] ?? 1000.0; // базовый штраф тоже увеличил
-      
-      if (importantNegativeTags.contains(tag)) {
-        // Для важных препятствий - полный огромный штраф
-        penalty += basePenalty;
-        print('⚠️ Важное препятствие "$tag": +${basePenalty}м');
-      } else {
-        // Для неважных - всё равно штраф, но поменьше
-        penalty += basePenalty / 3;
-        print('⚠️ Неважное препятствие "$tag": +${(basePenalty / 3).toStringAsFixed(0)}м');
-      }
-    }
-    
-    return penalty;
   }
 }
